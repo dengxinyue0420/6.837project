@@ -1,5 +1,6 @@
 #include "Noise.h"
 #include "PerlinNoise.h"
+#include <algorithm>
 
 Noise::Noise() :
     octaves(0),
@@ -28,7 +29,7 @@ Noise::getColor(const Vector3f &pos)
     // Interpolate between two colors by weighted average
   double perlin = perlinOctaveNoise(pos,octaves);
   float m = std::sin(frequency*pos.x()+amplitude*perlin)/2+0.5f;
-  float m_clamped = std::fminf(1.0f,std::fmaxf(m,0.0f));
+  float m_clamped = std::min(1.0f,std::max(m,0.0f));
 
   return (float)m*color[0]+(1-(float)m)*color[1];
 }

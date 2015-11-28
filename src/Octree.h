@@ -1,6 +1,9 @@
 #ifndef OCTREE_HPP
 #define OCTREE_HPP
 
+
+#include <stdint.h>
+
 class Mesh;
 
 struct Box

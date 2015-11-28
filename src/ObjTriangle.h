@@ -5,10 +5,12 @@
 
 // By default counterclockwise winding is front face
 struct ObjTriangle {
-    ObjTriangle() :
-        x{ { 0, 0, 0 } },
-        texID{ { 0, 0, 0 } }
-    {
+    ObjTriangle() 
+	{
+			std::array<int, 3> a = {{0,0,0}};
+			std::array<int, 3> b = {{0,0,0}};
+			x = a;
+			texID = b;
     }
 
     int & operator[](int i) {
@@ -17,6 +19,7 @@ struct ObjTriangle {
 
     std::array<int, 3> x;
     std::array<int, 3> texID;
+	std::array<int, 3> normalID;
 };
 
 #endif // OBJ_TRIANGLE_H
