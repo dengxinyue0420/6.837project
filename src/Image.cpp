@@ -3,6 +3,7 @@
 #include <cstring>
 #include <cassert>
 #include <stdint.h>
+#include <iostream>
 
 #include "Image.h"
 
@@ -55,7 +56,7 @@ Image::loadPNG(const std::string &filename)
     int w, h, n;
     unsigned char *buffer = stbi_load(filename.c_str(), &w, &h, &n, 0);
     assert(buffer != NULL);
-    assert(n == 3);
+    //assert(n == 3); dunno why this is needed;
 
     Image *image = new Image(w, h);
 

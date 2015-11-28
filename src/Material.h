@@ -19,7 +19,8 @@ class Material
         _diffuseColor(diffuseColor),
         _specularColor(specularColor),
         _shininess(shininess),
-        _refractionIndex(refractionIndex)
+        _refractionIndex(refractionIndex),
+		_hasDisplacement(false)
     {
     }
 
@@ -81,6 +82,19 @@ class Material
         _texture.load(filename);
     }
 
+	void loadDisplacement(const std::string &filename){
+		_displacementMap.load(filename);
+		_hasDisplacement = true;
+	}
+
+	float getDisplacement(Vector2f &uv){
+		return  _displacementMap.getTexel(uv.x(), uv.y()).y();
+	}
+
+	bool hasDisplacement(){
+		return _hasDisplacement;
+	}
+
     static Vector3f pointwiseDot(const Vector3f &v1, const Vector3f &v2) {
         return Vector3f(v1[0] * v2[0], v1[1] * v2[1], v1[2] * v2[2]);
     }
@@ -97,6 +111,8 @@ protected:
     float _refractionIndex;
     Texture _texture;
     Noise _noise;
+	Texture _displacementMap;
+	bool _hasDisplacement;
 };
 
 #endif // MATERIAL_H

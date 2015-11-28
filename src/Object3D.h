@@ -32,6 +32,8 @@ class Object3D
 
     virtual bool intersect(const Ray &r, float tmin, Hit &h) const = 0;
 
+	virtual void preRender() {};
+
   private:
     std::string type;
     Material *material;

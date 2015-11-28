@@ -141,8 +141,6 @@ Mesh::Mesh(const std::string &filename, Material *material) :
 			}
 		}
 	}
-	std::cout << "got here";
-	std::cout << n.size();
     // Set up triangles
     for (size_t i = 0; i < t.size(); i++) {
         Triangle triangle(v[t[i][0]],
@@ -159,9 +157,7 @@ Mesh::Mesh(const std::string &filename, Material *material) :
         }
         _triangles.push_back(triangle);
     }
-	std::cout << "got here";
-    octree.build(this);
-	std::cout << "got here";
+    //octree.build(this);
 }
 
 bool
@@ -180,4 +176,12 @@ Mesh::intersectTrig(int idx) const
     const Triangle &triangle = _triangles[idx];
     bool result = triangle.intersect(*ray, tm, *hit);
     return result;
+}
+
+void
+Mesh::preRender() {
+	for (int i = 0; i < _triangles.size(); i++){
+		_triangles[i].preRender();
+	}
+	octree.build(this);
 }

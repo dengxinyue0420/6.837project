@@ -35,6 +35,12 @@ class Group : public Object3D
       return flag;  
     }
 
+	virtual void preRender() {
+		for (int i = 0; i < objs.size(); i++){
+			objs[i] -> preRender();
+		}
+	}
+
     // Add object to group
     void addObject(Object3D *obj)
     {

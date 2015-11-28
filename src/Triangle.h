@@ -69,6 +69,15 @@ class Triangle: public Object3D
         return false;
     }
 
+	virtual void preRender(){
+		if (getMaterial()->hasDisplacement()){
+			for (int i = 0; i < 3; i++){
+				
+				_v[i] = _v[i] + getMaterial() -> getDisplacement(_texCoords[i]) * _normals[i];
+			}
+		}
+	}
+
     void setTex(const Vector2f &uva,
                 const Vector2f &uvb,
                 const Vector2f &uvc)

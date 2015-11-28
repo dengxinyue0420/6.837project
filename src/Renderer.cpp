@@ -194,7 +194,7 @@ Renderer::Render()
   Camera * cam = this->_scene.getCamera();
   Group * group = this->_scene.getGroup();
   Image outputF = Image(width,height);
-
+  group->preRender();
 
   if(_args.jitter){
     x_step /=3;
