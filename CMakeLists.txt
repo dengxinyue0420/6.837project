@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 cmake_policy(SET CMP0015 NEW)
 
-project(a5)
+project(final)
 
 # Silence warnings about deprecated GLUT functions
 if(APPLE)
