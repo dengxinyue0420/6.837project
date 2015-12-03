@@ -39,35 +39,19 @@ main(int argc, const char *argv[])
     imageDiff->savePNG(argv[4]);
   }else if(!strcmp(argv[1],"-noise")){
     int octaves = atoi(argv[2]);
-    float persistence = atof(argv[3]);
-    MyNoise mn = MyNoise();
+    int width = atoi(argv[3]);
+    int height = atoi(argv[4]);
 
-    Image output = Image(50,50);
-    std::vector<float> noise;
-    float max = -100000.0f;
-    float min = 1000000.0f;
-    for(int i=0;i<50;i++){
-      for(int j=0;j<50;j++){
-        std::cout<<"========"<<std::endl;
-        float x = (float)i/25;
-        float y = (float)j/25;
-        std::cout<<x<<"\t"<<y<<std::endl;
-        float n = mn.perlinNoise(x,y,octaves,persistence);
-        float abs_n =(float)fabs((double)n);
-        //std::cout<<abs_n<<std::endl;
-        // if(abs_n<min){
-        //   min = abs_n;
-        // }
-        // if(abs_n>max){
-        //   max = abs_n;
-        // }
-        // noise.push_back(abs_n);
-        Vector3f color =abs_n*Vector3f(1,1,1);
-        //color.print();
+    MyNoise mn = MyNoise(width,height);
+    Image output = Image(width,height);
+    for(int i=0;i<width;i++){
+      for(int j=0;j<height;j++){
+        float n = mn.getNoise(i,j,octaves);
+        Vector3f color =n*Vector3f(1,1,1);
         output.setPixel(i,j,color);
       }
     }
-    output.savePNG(argv[4]);
+    output.savePNG(argv[5]);
   }else{
     ArgParser argsParser(argc, argv);
     Renderer renderer(argsParser);
