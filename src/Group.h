@@ -35,9 +35,9 @@ class Group : public Object3D
       return flag;  
     }
 
-	virtual void preRender() {
+	virtual void preRender(float t) {
 		for (int i = 0; i < objs.size(); i++){
-			objs[i] -> preRender();
+			objs[i] -> preRender(t);
 		}
 	}
 

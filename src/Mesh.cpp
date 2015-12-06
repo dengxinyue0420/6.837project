@@ -166,6 +166,7 @@ Object3D(material)
       ray = &r;
       hit = &h;
       tm = tmin;
+
       bool result = octree.intersect(r);
       return result;
     }
@@ -179,9 +180,11 @@ Object3D(material)
     }
 
     void
-    Mesh::preRender() {
+    Mesh::preRender(float t) {
       for (int i = 0; i < _triangles.size(); i++){
-        _triangles[i].preRender();
+        _triangles[i].preRender(t);
       }
+	  std::cout << "building oct tree";
       octree.build(this);
+	  std::cout << "finished building oct tree";
     }

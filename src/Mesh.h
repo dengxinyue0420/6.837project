@@ -18,7 +18,7 @@ class Mesh : public Object3D {
 
     virtual bool intersectTrig(int idx) const;
 
-	virtual void preRender();
+	virtual void preRender(float t);
 
     const std::vector<Triangle> & getTriangles() const {
         return _triangles;

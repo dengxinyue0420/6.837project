@@ -20,7 +20,8 @@ class Material
         _specularColor(specularColor),
         _shininess(shininess),
         _refractionIndex(refractionIndex),
-		_hasDisplacement(false)
+		_hasDisplacement(false),
+		_isExplosion(false)
     {
     }
 
@@ -63,6 +64,18 @@ class Material
                    const Vector3f &lightColor)
     {
         Vector3f kd;
+		if (_isExplosion){
+			const Vector2f &texCoord = hit.getTexCoord();
+			float d = Vector3f::dot(_displacementMap.getTexel(texCoord[0], texCoord[1]), _channelVector) / 1.2f;
+			if (d > 0.99) d = 0.99;
+			if (d < 0 ) d = 0;
+			Vector3f diffuse = _ramp -> getPixel(d*_ramp -> getWidth(), 1);
+			Vector3f n = hit.getNormal().normalized();
+			Vector3f color = clampedDot(dirToLight, n) * pointwiseDot(lightColor, diffuse);
+			return diffuse;
+		}
+
+
         if (_noise.isValid()) {
             kd = _noise.getColor(ray.getOrigin() + ray.getDirection() * hit.getT());
         } else if (_texture.isValid() && hit.hasTex()) {
@@ -79,16 +92,42 @@ class Material
 
     void loadTexture(const std::string &filename)
     {
+		std::cout << filename;
         _texture.load(filename);
     }
+
+	void setExplosion(){
+		_isExplosion = true;
+		_channelVector = Vector3f(1,0,0);
+	}
 
 	void loadDisplacement(const std::string &filename){
 		_displacementMap.load(filename);
 		_hasDisplacement = true;
 	}
 
+	void preRender(float t){
+		if(_isExplosion){
+			float r = sin(t * 2 * 3.14) * 0.5f + 0.25f ;
+			float g = sin((t + 0.333f) * 2 * 3.14) * 0.5f + 0.25f ;
+			float b = sin((t + 0.667f) * 2 * 3.14) * 0.5f + 0.25f ;
+			float c = 1;// / (r+g+b);
+			_channelVector = Vector3f(r * c, g*c, b*c);
+			_channelVector.print();
+		}
+	}
+
+	void loadRamp(const std::string &filename){
+		_ramp = Image::loadPNG(filename);
+	}
+
+
 	float getDisplacement(Vector2f &uv){
-		return  _displacementMap.getTexel(uv.x(), uv.y()).y();
+		if (!_isExplosion){
+			return  _displacementMap.getTexel(uv.x(), uv.y()).y();
+		} else {
+			return Vector3f::dot(_displacementMap.getTexel(uv.x(), uv.y()), _channelVector);
+		}
 	}
 
 	bool hasDisplacement(){
@@ -112,7 +151,10 @@ protected:
     Texture _texture;
     Noise _noise;
 	Texture _displacementMap;
+	Vector3f _channelVector;
+	Image *_ramp;
 	bool _hasDisplacement;
+	bool _isExplosion;
 };
 
 #endif // MATERIAL_H

@@ -268,11 +268,13 @@ SceneParser::parseMaterial()
     char token[MAX_PARSER_TOKEN_LENGTH];
     char filename[MAX_PARSER_TOKEN_LENGTH];
 	char displacementMapName[MAX_PARSER_TOKEN_LENGTH];
+	char rampName[MAX_PARSER_TOKEN_LENGTH];
 	displacementMapName[0] = 0;
     filename[0] = 0;
     Vector3f diffuseColor(1,1,1), specularColor(0,0,0);
     float shininess = 0;
     float refractionIndex = 0;
+	bool isExplosion = false;
     Noise *noise = NULL;
     getToken(token); assert(!strcmp(token, "{"));
     while (true) {
@@ -301,6 +303,10 @@ SceneParser::parseMaterial()
 		else if(strcmp(token, "displacement") == 0){
 			getToken(displacementMapName);
 		}
+		else if(strcmp(token, "explosion") == 0){
+			isExplosion = true;
+			getToken(rampName);
+		}
         else {
             assert(!strcmp(token, "}"));
             break;
@@ -312,6 +318,10 @@ SceneParser::parseMaterial()
     }
 	if(displacementMapName[0] != 0){
 		answer -> loadDisplacement(displacementMapName);
+	}
+	if (isExplosion){
+		answer -> setExplosion();
+		answer -> loadRamp(rampName);
 	}
     if (noise) {
         answer->setNoise(*noise);

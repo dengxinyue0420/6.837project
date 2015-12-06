@@ -173,7 +173,7 @@ Image blur(Image &image){
 }
 
 void
-Renderer::Render()
+Renderer::Render(float t, int frame)
 {
     // TODO: IMPLEMENT 
 
@@ -186,7 +186,7 @@ Renderer::Render()
   int stats = this->_args.stats;
   int minDepth = this->_args.depth_min;
   int maxDepth = this->_args.depth_max;
-  std::string outputFilename = this->_args.output_file;
+  std::string outputFilename = this->_args.output_file + std::to_string(frame) + ".png";
 
   float x_step = 2.0/width;
   float y_step = 2.0/height;
@@ -194,7 +194,12 @@ Renderer::Render()
   Camera * cam = this->_scene.getCamera();
   Group * group = this->_scene.getGroup();
   Image outputF = Image(width,height);
-  group->preRender();
+  for (int i = 0; i < this->_scene.getNumMaterials(); i++){
+	  this->_scene.getMaterial(i)->preRender(t);
+  }
+
+  group->preRender(t);
+
 
   if(_args.jitter){
     x_step /=3;
@@ -237,7 +242,7 @@ Renderer::Render()
 	Vector3f color = traceRay(r,0,_bounces,1.0f,h);
 	outputF.setPixel(i,j,color);
 	if(i%10==0 && j==299){
-	  std::cout<<"i="<<i<<"\tj="<<j<<std::endl;
+		std::cout<<"i="<<i<<"\tj="<<j<<std::endl;
 	}
       }
     }

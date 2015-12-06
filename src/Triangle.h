@@ -22,6 +22,9 @@ class Triangle: public Object3D
         _v[0] = a;
         _v[1] = b;
         _v[2] = c;
+		_ov[0] = a;
+        _ov[1] = b;
+        _ov[2] = c;
         _normals[0] = na;
         _normals[1] = nb;
         _normals[2] = nc;
@@ -69,11 +72,10 @@ class Triangle: public Object3D
         return false;
     }
 
-	virtual void preRender(){
+	virtual void preRender(float t){
 		if (getMaterial()->hasDisplacement()){
-			for (int i = 0; i < 3; i++){
-				
-				_v[i] = _v[i] + getMaterial() -> getDisplacement(_texCoords[i]) * _normals[i];
+			for (int i = 0; i < 3; i++){	
+				_v[i] = _ov[i] + getMaterial() -> getDisplacement(_texCoords[i]) * _normals[i];
 			}
 		}
 	}
@@ -109,6 +111,7 @@ class Triangle: public Object3D
 
   private:
     bool _hasTex;
+	Vector3f _ov[3];
     Vector3f _v[3];
     Vector3f _normals[3];
     Vector2f _texCoords[3];

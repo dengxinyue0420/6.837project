@@ -20,7 +20,7 @@ class Renderer
 
     // If depth_file is empty, a depth image is not generated.
     // Same for normals_file and the normal image.
-    void Render();
+    void Render(float t, int frame);
 
   private:
     // IMPLEMENT
