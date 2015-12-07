@@ -69,18 +69,18 @@ transmittedDirection(const Vector3f &normal,
             Group *g = _scene.getGroup();
             int range_x;
             int range_y;
-            if(t<0.7){
+            if(t<0.6){
                 range_x = 32*t;
-                range_y = 32*t +200;
+                range_y = 32*t +128;
             }else{
-                range_x = 64+32*(t-0.7);
+                range_x = 50+32*(t-0.7);
                 range_y = 200;
             }
             //std::cout<<"=============="<<std::endl;
             if(g->intersect(ray,tmin,hit)){
                 Material *m = hit.getMaterial();
                 float d = m->getD(hit.getTexCoord(),range_x,range_y);
-                if(d>0.4){
+                if(d>0.45){
                     return _scene.getBackgroundColor(ray.getDirection());
                 }
                 Vector3f color =m->getDiffuse(hit)*_scene.getAmbientLight();
@@ -200,8 +200,12 @@ transmittedDirection(const Vector3f &normal,
             int stats = this->_args.stats;
             int minDepth = this->_args.depth_min;
             int maxDepth = this->_args.depth_max;
-            std::string outputFilename = this->_args.output_file + std::to_string(frame) + ".png";
-
+            std::string outputFilename;
+            if(frame<10){
+                outputFilename = this->_args.output_file +"0"+ std::to_string(frame) + ".png";
+            }else{
+                outputFilename = this->_args.output_file + std::to_string(frame) + ".png";
+            }
             float x_step = 2.0/width;
             float y_step = 2.0/height;
 
