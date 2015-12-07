@@ -25,8 +25,8 @@ class Renderer
   private:
     // IMPLEMENT
     void printNoise() const;
-    Vector3f traceRay(const Ray &ray, float tmin, int bounces, 
-                      float refr_index, Hit &hit) const;
+    Vector3f traceRay(const Ray &ray, float tmin, int bounces,
+                      float refr_index, Hit &hit, float t) const;
     Vector3f computeShadowColor(Ray &ray, float distanceToLight) const;
 
     const ArgParser &_args;

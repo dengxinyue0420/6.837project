@@ -4,6 +4,7 @@
 #include <cassert>
 #include <string>
 #include <vector>
+#include <iostream>
 
 #include "vecmath.h"
 

@@ -9,9 +9,9 @@
 class Triangle: public Object3D
 {
   public:
-    Triangle(const Vector3f &a, 
-             const Vector3f &b, 
-             const Vector3f &c, 
+    Triangle(const Vector3f &a,
+             const Vector3f &b,
+             const Vector3f &c,
              const Vector3f &na,
              const Vector3f &nb,
              const Vector3f &nc,
@@ -30,10 +30,10 @@ class Triangle: public Object3D
         _normals[2] = nc;
     }
 
-    virtual bool intersect(const Ray &ray, float tmin, Hit &hit) const {
+    virtual bool intersect(const Ray &ray, float tmin, Hit &hit) const{
         const Vector3f &Rd = ray.getDirection();
         const Vector3f &Ro = ray.getOrigin();
-        
+
         Matrix3f A(_v[0][0] - _v[1][0], _v[0][0] - _v[2][0], Rd[0],
                    _v[0][1] - _v[1][1], _v[0][1] - _v[2][1], Rd[1],
                    _v[0][2] - _v[1][2], _v[0][2] - _v[2][2], Rd[2]);
@@ -45,12 +45,12 @@ class Triangle: public Object3D
         float beta = x[0], gamma = x[1], t = x[2];
 
         if ((beta>=0.0)&&(gamma>=0.0)&&(beta+gamma<=1)) {
-            if ((t < tmin) || (t>hit.getT())) { 
+            if ((t < tmin) || (t>hit.getT())) {
                 return false;
             } else{
                 Vector3f direction;
 
-                direction = 
+                direction =
                     (1 - beta - gamma) * _normals[0] + beta * _normals[1] + gamma * _normals[2];
 
                 // no intersection
@@ -58,7 +58,7 @@ class Triangle: public Object3D
                     return false;
                 }
                 direction = direction / direction.abs();
-                hit.set(t, getMaterial(), direction);
+
                 if (hasTex()) {
                     Vector2f texC =
                         (1 - beta - gamma) * _texCoords[0] +
@@ -66,6 +66,7 @@ class Triangle: public Object3D
                                      gamma * _texCoords[2];
                     hit.setTexCoord(texC);
                 }
+                hit.set(t, getMaterial(), direction);
                 return true;
             }
         }
@@ -74,7 +75,7 @@ class Triangle: public Object3D
 
 	virtual void preRender(float t){
 		if (getMaterial()->hasDisplacement()){
-			for (int i = 0; i < 3; i++){	
+			for (int i = 0; i < 3; i++){
 				_v[i] = _ov[i] + getMaterial() -> getDisplacement(_texCoords[i]) * _normals[i];
 			}
 		}

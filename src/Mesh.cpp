@@ -184,7 +184,7 @@ Object3D(material)
       for (int i = 0; i < _triangles.size(); i++){
         _triangles[i].preRender(t);
       }
-	  std::cout << "building oct tree";
+	  //std::cout << "building oct tree";
       octree.build(this);
-	  std::cout << "finished building oct tree";
+	  //std::cout << "finished building oct tree";
     }

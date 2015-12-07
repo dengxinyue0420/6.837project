@@ -12,8 +12,8 @@
 class Material
 {
   public:
-    Material(const Vector3f &diffuseColor, 
-             const Vector3f &specularColor = Vector3f::ZERO, 
+    Material(const Vector3f &diffuseColor,
+             const Vector3f &specularColor = Vector3f::ZERO,
              float shininess = 0,
              float refractionIndex = 0) :
         _diffuseColor(diffuseColor),
@@ -58,18 +58,28 @@ class Material
       }
     }
 
-    Vector3f shade(const Ray &ray, 
+    float getD(Vector2f texCoord, int range_x, int range_y){
+        float d = Vector3f::dot(_displacementMap.getTexel(texCoord[0], texCoord[1]), _channelVector) / 1.2f;
+        return (d*(range_y-range_x)+range_x)/_ramp->getWidth();
+    }
+
+    void wtf(int x){
+        std::cout<<x<<std::endl;
+    }
+    Vector3f shade(const Ray &ray,
                    const Hit &hit,
-                   const Vector3f &dirToLight, 
-                   const Vector3f &lightColor)
+                   const Vector3f &dirToLight,
+                   const Vector3f &lightColor,
+                   const int range_x,
+                   const int range_y)
     {
         Vector3f kd;
 		if (_isExplosion){
 			const Vector2f &texCoord = hit.getTexCoord();
 			float d = Vector3f::dot(_displacementMap.getTexel(texCoord[0], texCoord[1]), _channelVector) / 1.2f;
-			if (d > 0.99) d = 0.99;
+			if(d>0.99) d = 0.99;
 			if (d < 0 ) d = 0;
-			Vector3f diffuse = _ramp -> getPixel(d*_ramp -> getWidth(), 1);
+			Vector3f diffuse = _ramp -> getPixel(d*(range_y-range_x)+range_x, 1);
 			Vector3f n = hit.getNormal().normalized();
 			Vector3f color = clampedDot(dirToLight, n) * pointwiseDot(lightColor, diffuse);
 			return diffuse;
@@ -113,7 +123,7 @@ class Material
 			float b = sin((t + 0.667f) * 2 * 3.14) * 0.5f + 0.25f ;
 			float c = 1;// / (r+g+b);
 			_channelVector = Vector3f(r * c, g*c, b*c);
-			_channelVector.print();
+			//_channelVector.print();
 		}
 	}
 
@@ -141,7 +151,7 @@ class Material
 protected:
     static float clampedDot(const Vector3f &L, const Vector3f &N) {
         float d = Vector3f::dot(L,N);
-        return (d > 0) ? d : 0; 
+        return (d > 0) ? d : 0;
     }
 
     Vector3f _diffuseColor;
