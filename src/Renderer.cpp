@@ -67,20 +67,14 @@ transmittedDirection(const Vector3f &normal,
             // TODO: IMPLEMENT
             Hit hit = Hit(std::numeric_limits<float>::max(),NULL,Vector3f::ZERO);
             Group *g = _scene.getGroup();
-            int range_x;
-            int range_y;
-            if(t<0.6){
-                range_x = 32*t;
-                range_y = 32*t +128;
-            }else{
-                range_x = 50+32*(t-0.7);
-                range_y = 200;
-            }
+            float range_x = t * t * 0.3f;
+            float range_y = t * 0.55f + 0.45f;
+			float clip = 0.7 - t*0.3;
             //std::cout<<"=============="<<std::endl;
             if(g->intersect(ray,tmin,hit)){
                 Material *m = hit.getMaterial();
                 float d = m->getD(hit.getTexCoord(),range_x,range_y);
-                if(d>0.45){
+                if(d>clip){
                     return _scene.getBackgroundColor(ray.getDirection());
                 }
                 Vector3f color =m->getDiffuse(hit)*_scene.getAmbientLight();

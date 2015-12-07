@@ -58,9 +58,9 @@ class Material
       }
     }
 
-    float getD(Vector2f texCoord, int range_x, int range_y){
+    float getD(Vector2f texCoord, float range_x, float range_y){
         float d = Vector3f::dot(_displacementMap.getTexel(texCoord[0], texCoord[1]), _channelVector) / 1.2f;
-        return (d*(range_y-range_x)+range_x)/_ramp->getWidth();
+        return (d*(range_y-range_x)+range_x);
     }
 
     void wtf(int x){
@@ -70,8 +70,8 @@ class Material
                    const Hit &hit,
                    const Vector3f &dirToLight,
                    const Vector3f &lightColor,
-                   const int range_x,
-                   const int range_y)
+                   const float range_x,
+                   const float range_y)
     {
         Vector3f kd;
 		if (_isExplosion){
@@ -79,7 +79,7 @@ class Material
 			float d = Vector3f::dot(_displacementMap.getTexel(texCoord[0], texCoord[1]), _channelVector) / 1.2f;
 			if(d>0.99) d = 0.99;
 			if (d < 0 ) d = 0;
-			Vector3f diffuse = _ramp -> getPixel(d*(range_y-range_x)+range_x, 1);
+			Vector3f diffuse = _ramp -> getPixel((d*(range_y-range_x)+range_x) * _ramp->getWidth(), 1);
 			Vector3f n = hit.getNormal().normalized();
 			Vector3f color = clampedDot(dirToLight, n) * pointwiseDot(lightColor, diffuse);
 			return diffuse;
