@@ -147,7 +147,7 @@ Octree::build(Mesh *m)
 }
 
 int
-first_node(float tx0, float ty0, float tz0, 
+first_node(float tx0, float ty0, float tz0,
            float txm, float tym, float tzm)
 {
     int bits = 0;
@@ -183,8 +183,8 @@ first_node(float tx0, float ty0, float tz0,
 }
 
 int
-new_node(float txm, int x, 
-         float tym, int y, 
+new_node(float txm, int x,
+         float tym, int y,
          float tzm, int z)
 {
     if (txm < tym) {
@@ -200,13 +200,16 @@ new_node(float txm, int x,
 }
 
 bool
-Octree::proc_subtree(float tx0, 
-                     float ty0, 
-                     float tz0, 
-                     float tx1, 
-                     float ty1, 
-                     float tz1, 
-                     OctNode *node)
+Octree::proc_subtree(float tx0,
+                     float ty0,
+                     float tz0,
+                     float tx1,
+                     float ty1,
+                     float tz1,
+                     OctNode *node,
+                     float range_x,
+                     float range_y,
+                     float clip)
 {
     bool intersected = false;
 
@@ -217,55 +220,55 @@ Octree::proc_subtree(float tx0,
     if (node->isTerm()) {
         //loop over things
         for (size_t ii = 0; ii < node->obj.size(); ii++) {
-            bool result = mesh->intersectTrig(node->obj[ii]);
+            bool result = mesh->intersectTrig(node->obj[ii],range_x,range_y,clip);
             intersected = intersected || result;
         }
         return intersected;
     }
 
     float txm = 0.5f * (tx0 + tx1);
-    float tym = 0.5f * (ty0 + ty1);  
-    float tzm = 0.5f * (tz0 + tz1);  
+    float tym = 0.5f * (ty0 + ty1);
+    float tzm = 0.5f * (tz0 + tz1);
     int currNode = first_node(tx0, ty0, tz0, txm, tym, tzm);
     do {
         switch (currNode) {
         case 0: {
-            bool result = proc_subtree(tx0, ty0, tz0, txm, tym, tzm, node->child[aa]);
+            bool result = proc_subtree(tx0, ty0, tz0, txm, tym, tzm, node->child[aa],range_x,range_y,clip);
             intersected |= result;
             currNode = new_node(txm, 4, tym, 2, tzm, 1);
         } break;
         case 1: {
-            bool result = proc_subtree(tx0, ty0, tzm, txm, tym, tz1, node->child[1^aa]);
+            bool result = proc_subtree(tx0, ty0, tzm, txm, tym, tz1, node->child[1^aa],range_x,range_y,clip);
             intersected |= result;
             currNode = new_node(txm, 5, tym, 3, tz1, 8);
         } break;
         case 2: {
-            bool result = proc_subtree(tx0, tym, tz0, txm, ty1, tzm, node->child[2^aa]);
+            bool result = proc_subtree(tx0, tym, tz0, txm, ty1, tzm, node->child[2^aa],range_x,range_y,clip);
             intersected |= result;
             currNode = new_node(txm, 6, ty1, 8, tzm, 3);
         } break;
         case 3: {
-            bool result = proc_subtree(tx0, tym, tzm, txm, ty1, tz1, node->child[3^aa]);
+            bool result = proc_subtree(tx0, tym, tzm, txm, ty1, tz1, node->child[3^aa],range_x,range_y,clip);
             intersected |= result;
             currNode = new_node(txm, 7, ty1, 8, tz1, 8);
         } break;
         case 4: {
-            bool result = proc_subtree(txm, ty0, tz0, tx1, tym, tzm, node->child[4^aa]);
+            bool result = proc_subtree(txm, ty0, tz0, tx1, tym, tzm, node->child[4^aa],range_x,range_y,clip);
             intersected |= result;
             currNode = new_node(tx1, 8, tym, 6, tzm, 5);
         } break;
         case 5: {
-            bool result = proc_subtree(txm, ty0, tzm, tx1, tym, tz1, node->child[5^aa]);
+            bool result = proc_subtree(txm, ty0, tzm, tx1, tym, tz1, node->child[5^aa],range_x,range_y,clip);
             intersected |= result;
             currNode = new_node(tx1, 8, tym, 7, tz1, 8);
         } break;
         case 6: {
-            bool result = proc_subtree(txm, tym, tz0, tx1, ty1, tzm, node->child[6^aa]);
+            bool result = proc_subtree(txm, tym, tz0, tx1, ty1, tzm, node->child[6^aa],range_x,range_y,clip);
             intersected |= result;
             currNode = new_node(tx1, 8, ty1, 8, tzm, 7);
         } break;
         case 7: {
-            bool result = proc_subtree(txm, tym, tzm, tx1, ty1, tz1, node->child[7^aa]);
+            bool result = proc_subtree(txm, tym, tzm, tx1, ty1, tz1, node->child[7^aa],range_x,range_y,clip);
             intersected |= result;
             currNode = 8;
         } break;
@@ -276,7 +279,7 @@ Octree::proc_subtree(float tx0,
 }
 
 bool
-Octree::intersect(const Ray &ray)
+Octree::intersect(const Ray &ray, float range_x,float range_y, float clip)
 {
     Vector3f rd = ray.getDirection();
 
@@ -289,7 +292,7 @@ Octree::intersect(const Ray &ray)
     if (rd[0]<0.0f) {
         ro[0] = size[0] - ro[0];
         rd[0] = - rd[0];
-        aa |= 4 ; 
+        aa |= 4 ;
     }
     if (rd[1] < 0.0f) {
         ro[1] = size[1] - ro[1];
@@ -320,7 +323,7 @@ Octree::intersect(const Ray &ray)
     float tz1 = (box.mx[2] - ro[2]) * divz;
 
     if (std::max(std::max(tx0,ty0), tz0) <= std::min(std::min(tx1, ty1), tz1)) {
-        return proc_subtree(tx0, ty0, tz0, tx1, ty1, tz1, &root);
+        return proc_subtree(tx0, ty0, tz0, tx1, ty1, tz1, &root, range_x,range_y,clip);
     } else {
         return false;
     }

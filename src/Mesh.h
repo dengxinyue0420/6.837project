@@ -14,9 +14,9 @@ class Mesh : public Object3D {
   public:
     Mesh(const std::string &filename, Material *m);
 
-    virtual bool intersect(const Ray &r, float tmin, Hit &h) const;
+    virtual bool intersect(const Ray &r, float tmin, Hit &h, float range_x,float range_y, float clip) const;
 
-    virtual bool intersectTrig(int idx) const;
+    virtual bool intersectTrig(int idx,float range_x,float range_y, float clip) const;
 
 	virtual void preRender(float t);
 

@@ -30,7 +30,7 @@ class Object3D
         return material;
     }
 
-    virtual bool intersect(const Ray &r, float tmin, Hit &h) const=0;
+    virtual bool intersect(const Ray &r, float tmin, Hit &h, float range_x, float range_y, float clip) const=0;
 
 	virtual void preRender(float t) {};
 

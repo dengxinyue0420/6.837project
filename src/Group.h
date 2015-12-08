@@ -7,12 +7,12 @@
 
 #include <iostream>
 #include <vector>
-/// TODO: 
+/// TODO:
 /// Implement Group
-/// Add data structure to store a list of Object* 
+/// Add data structure to store a list of Object*
 class Group : public Object3D
 {
-  public:
+public:
     // Constructor
     Group()
     {
@@ -24,36 +24,36 @@ class Group : public Object3D
     }
 
     // Return true if intersection found
-    virtual bool intersect(const Ray &r, float tmin, Hit &h) const
+    virtual bool intersect(const Ray &r, float tmin, Hit &h,float range_x,float range_y, float clip) const
     {
-      bool flag = false;
-      for(int i=0;i<objs.size();i++){
-	if(objs[i]->intersect(r,tmin,h)){
-	  flag = true;
-	}
-      }
-      return flag;  
+        bool flag = false;
+        for(int i=0;i<objs.size();i++){
+            if(objs[i]->intersect(r,tmin,h,range_x,range_y,clip)){
+                flag = true;
+            }
+        }
+        return flag;
     }
 
-	virtual void preRender(float t) {
-		for (int i = 0; i < objs.size(); i++){
-			objs[i] -> preRender(t);
-		}
-	}
+    virtual void preRender(float t) {
+        for (int i = 0; i < objs.size(); i++){
+            objs[i] -> preRender(t);
+        }
+    }
 
     // Add object to group
     void addObject(Object3D *obj)
     {
-      objs.push_back(obj);
+        objs.push_back(obj);
     }
 
     // Return number of objects in group
     int getGroupSize()
     {
-      return objs.size();
+        return objs.size();
     }
 
-  private:
+private:
     std::vector<Object3D*> objs;
 };
 

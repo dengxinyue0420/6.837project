@@ -30,7 +30,7 @@ class Triangle: public Object3D
         _normals[2] = nc;
     }
 
-    virtual bool intersect(const Ray &ray, float tmin, Hit &hit) const{
+    virtual bool intersect(const Ray &ray, float tmin, Hit &hit, float range_x, float range_y, float clip) const{
         const Vector3f &Rd = ray.getDirection();
         const Vector3f &Ro = ray.getOrigin();
 
@@ -64,6 +64,10 @@ class Triangle: public Object3D
                         (1 - beta - gamma) * _texCoords[0] +
                                       beta * _texCoords[1] +
                                      gamma * _texCoords[2];
+                    float d = getMaterial()->getD(texC,range_x,range_y);
+                    if(d>clip){
+                        return false;
+                    }
                     hit.setTexCoord(texC);
                 }
                 hit.set(t, getMaterial(), direction);

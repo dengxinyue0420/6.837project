@@ -50,20 +50,20 @@ class Octree
 
     void build(Mesh *m);
 
-    bool intersect(const Ray &ray);
+    bool intersect(const Ray &ray, float range_x,float range_y, float clip);
 
   private:
-    void buildNode(OctNode *parent, 
+    void buildNode(OctNode *parent,
                    const Box &pbox,
-                   const std::vector<int> &trigs, 
-                   const Mesh &m, 
+                   const std::vector<int> &trigs,
+                   const Mesh &m,
                    int level);
 
-    bool proc_subtree(float tx0, float ty0, float tz0, 
-                      float tx1, float ty1, float tz1, 
-                      OctNode *node);
+    bool proc_subtree(float tx0, float ty0, float tz0,
+                      float tx1, float ty1, float tz1,
+                      OctNode *node,float range_x,float range_y, float clip);
 
-    // if a node contains more than 7 triangles and it 
+    // if a node contains more than 7 triangles and it
     // hasn't reached the max level yet, split
     static const int max_trig = 7;
 

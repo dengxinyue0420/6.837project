@@ -71,12 +71,14 @@ transmittedDirection(const Vector3f &normal,
             float range_y = t * 0.55f + 0.45f;
 			float clip = 0.7 - t*0.3;
             //std::cout<<"=============="<<std::endl;
-            if(g->intersect(ray,tmin,hit)){
+            if(g->intersect(ray,tmin,hit,range_x,range_y,clip)){
                 Material *m = hit.getMaterial();
+                /*
                 float d = m->getD(hit.getTexCoord(),range_x,range_y);
                 if(d>clip){
                     return _scene.getBackgroundColor(ray.getDirection());
                 }
+                */
                 Vector3f color =m->getDiffuse(hit)*_scene.getAmbientLight();
                 Vector3f hitPoint = ray.pointAtParameter(hit.getT());
                 for(int i=0; i<_scene.getNumLights();i++){
@@ -86,7 +88,7 @@ transmittedDirection(const Vector3f &normal,
                         Hit shadowH = Hit(std::numeric_limits<float>::max(),NULL,Vector3f::ZERO);
                         Ray shadowR = Ray(hitPoint,dirL.normalized());
                         //std::cout<<"shadow"<<std::endl;
-                        g->intersect(shadowR,0.05,shadowH);
+                        g->intersect(shadowR,0.05,shadowH, range_x,range_y,clip);
                         if(shadowH.getT()>=dis){
                             color+=m->shade(ray,hit,dirL,colorL, range_x, range_y);
                         }
@@ -196,8 +198,11 @@ transmittedDirection(const Vector3f &normal,
             int maxDepth = this->_args.depth_max;
             std::string outputFilename;
             if(frame<10){
+                outputFilename = this->_args.output_file +"00"+ std::to_string(frame) + ".png";
+            }else if(frame<100){
                 outputFilename = this->_args.output_file +"0"+ std::to_string(frame) + ".png";
-            }else{
+            }
+            else{
                 outputFilename = this->_args.output_file + std::to_string(frame) + ".png";
             }
             float x_step = 2.0/width;

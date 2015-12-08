@@ -161,21 +161,21 @@ Object3D(material)
     }
 
     bool
-    Mesh::intersect(const Ray &r, float tmin, Hit &h) const
+    Mesh::intersect(const Ray &r, float tmin, Hit &h,float range_x,float range_y,float clip) const
     {
       ray = &r;
       hit = &h;
       tm = tmin;
 
-      bool result = octree.intersect(r);
+      bool result = octree.intersect(r,range_x,range_y,clip);
       return result;
     }
 
     bool
-    Mesh::intersectTrig(int idx) const
+    Mesh::intersectTrig(int idx,float range_x,float range_y,float clip) const
     {
       const Triangle &triangle = _triangles[idx];
-      bool result = triangle.intersect(*ray, tm, *hit);
+      bool result = triangle.intersect(*ray, tm, *hit,range_x,range_y,clip);
       return result;
     }
 

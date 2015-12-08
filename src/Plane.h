@@ -18,7 +18,7 @@ class Plane: public Object3D
       offset = d;
     }
 
-    virtual bool intersect(const Ray &r, float tmin, Hit &h) const 
+    virtual bool intersect(const Ray &r, float tmin, Hit &h, float range_x,float range_y,float clip) const 
     {
       float denom = Vector3f::dot(r.getDirection(),_normal);
       if(denom==0){
@@ -38,5 +38,3 @@ class Plane: public Object3D
     float offset;
 };
 #endif //PLANE_H
-
-

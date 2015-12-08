@@ -11,14 +11,14 @@
 class Sphere : public Object3D
 {
  public:
-    Sphere(): 
+    Sphere():
       _center(Vector3f::ZERO),
       _radius(1.0f)
-    { 
+    {
     }
 
-    Sphere(const Vector3f &center, 
-           float radius, 
+    Sphere(const Vector3f &center,
+           float radius,
            Material *material) :
       Object3D(material),
 	_center(center),
@@ -26,14 +26,14 @@ class Sphere : public Object3D
     {
     }
 
-    virtual bool intersect(const Ray &r, float tmin, Hit &h) const
+    virtual bool intersect(const Ray &r, float tmin, Hit &h, float range_x,float range_y, float clip) const
     {
-      Vector3f origin = r.getOrigin();  
+      Vector3f origin = r.getOrigin();
       Vector3f dir = r.getDirection().normalized();
-      
+
       float b = 2*(Vector3f::dot(origin,dir)-Vector3f::dot(dir,_center));
       float c = origin.absSquared()-2*Vector3f::dot(origin,_center)+_center.absSquared()-_radius*_radius;
-      
+
       float dis = b*b-4*c;
       if(dis<0){
 	return false;  // TODO: implement
