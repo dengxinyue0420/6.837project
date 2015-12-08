@@ -202,7 +202,6 @@ transmittedDirection(const Vector3f &normal,
             }
             float x_step = 2.0/width;
             float y_step = 2.0/height;
-
             Camera * cam = this->_scene.getCamera();
             Group * group = this->_scene.getGroup();
             Image outputF = Image(width,height);

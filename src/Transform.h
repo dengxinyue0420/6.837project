@@ -11,10 +11,13 @@ class Transform: public Object3D
 {
   public: 
     Transform(const Matrix4f &m, 
-              Object3D *obj) :
+              Object3D *obj,
+			  bool explosion) :
        _object(obj), 
-       _m(m)
+       _m(m),
+	   _exp(explosion)
     {
+		_om = m;
     }
 
     virtual bool intersect(const Ray &r, float tmin, Hit &h) const
@@ -35,9 +38,20 @@ class Transform: public Object3D
       }
     }
 
+	virtual void preRender(float t) {
+		std::cout << "got here";
+
+		if (_exp){
+			_m = Matrix4f::uniformScaling(- 2.66*t*t + 3.33*t + 0.033) * _om;
+		}
+		_object->preRender(t);
+	}
+
   protected:
     Object3D *_object; //un-transformed object	
     Matrix4f _m;
+	Matrix4f _om;
+	bool _exp;
 };
 
 #endif //TRANSFORM_H

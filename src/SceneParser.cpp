@@ -515,12 +515,12 @@ SceneParser::parseTransform()
     char token[MAX_PARSER_TOKEN_LENGTH];
     Matrix4f matrix = Matrix4f::identity();
     Object3D *object = NULL;
+	bool explosion = false;
     getToken(token); assert(!strcmp(token, "{"));
     // read in transformations: 
     // apply to the LEFT side of the current matrix (so the first
     // transform in the list is the last applied to the object)
     getToken(token);
-
     while (true) {
         if (!strcmp(token,"Scale")) {
             Vector3f s = readVector3f();
@@ -554,18 +554,22 @@ SceneParser::parseTransform()
             }
             getToken(token); assert(!strcmp(token, "}"));
             matrix = matrix2 * matrix;
-        } else {
+        } else if (strcmp(token, "explosion") == 0){
+			explosion = true;
+		} else {
             // otherwise this must be an object,
             // and there are no more transformations
             object = parseObject(token);
             break;
         }
         getToken(token);
+
     }
 
     assert(object != NULL);
     getToken(token); assert(!strcmp(token, "}"));
-    return new Transform(matrix, object);
+
+    return new Transform(matrix, object, explosion);
 }
 
 // ====================================================================

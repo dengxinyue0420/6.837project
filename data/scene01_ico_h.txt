@@ -22,14 +22,18 @@ Background {
 Materials {
     numMaterials 1
     Material { explosion data/textures/ramp24.png
-	       displacement data/displacementMaps/explosion_displ24.png
+	       displacement data/displacementMaps/explosion_displ24_r.png
 		}
 }
 
 Group {
     numObjects 1
     MaterialIndex 0
-    TriangleMesh {
-        obj_file data/models/icosphere_h.obj
+    Transform {
+	explosion 
+	XRotate 90
+   	TriangleMesh {
+    		obj_file data/models/icosphere_h.obj
+  	}
     }
 }

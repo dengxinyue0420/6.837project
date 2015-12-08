@@ -147,6 +147,7 @@ class Material
     static Vector3f pointwiseDot(const Vector3f &v1, const Vector3f &v2) {
         return Vector3f(v1[0] * v2[0], v1[1] * v2[1], v1[2] * v2[2]);
     }
+	bool _isExplosion;
 
 protected:
     static float clampedDot(const Vector3f &L, const Vector3f &N) {
@@ -164,7 +165,6 @@ protected:
 	Vector3f _channelVector;
 	Image *_ramp;
 	bool _hasDisplacement;
-	bool _isExplosion;
 };
 
 #endif // MATERIAL_H
