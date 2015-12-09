@@ -60,8 +60,8 @@ main(int argc, const char *argv[])
   }else{
     ArgParser argsParser(argc, argv);
     Renderer renderer(argsParser);
-	for (int i = 0; i < 100; i++){
-		renderer.Render(0.01f*i,i);
+	for (int i = 0; i < 160; i++){
+		renderer.Render(0.00666*i,i);
 		std::cout << i << "\n";
 
 	}

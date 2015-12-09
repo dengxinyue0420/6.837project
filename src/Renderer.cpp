@@ -84,11 +84,16 @@ transmittedDirection(const Vector3f &normal,
                 for(int i=0; i<_scene.getNumLights();i++){
                     Vector3f dirL, colorL; float dis;
                     _scene.getLight(i)->getIllumination(hitPoint,dirL,colorL,dis);
-                    if(_args.shadows){
+					if((_args.shadows) && (hit.getMaterial()->receiveShadow())){
                         Hit shadowH = Hit(std::numeric_limits<float>::max(),NULL,Vector3f::ZERO);
                         Ray shadowR = Ray(hitPoint,dirL.normalized());
                         //std::cout<<"shadow"<<std::endl;
                         g->intersect(shadowR,0.05,shadowH, range_x,range_y,clip);
+						while (shadowH.getMaterial() != NULL && !shadowH.getMaterial()->castShadow()){
+							shadowR = Ray(shadowR.pointAtParameter(shadowH.getT()) + shadowR.getDirection() * 0.05, shadowR.getDirection());
+							shadowH = Hit(std::numeric_limits<float>::max(),NULL,Vector3f::ZERO);
+							g->intersect(shadowR,0.05,shadowH, range_x,range_y,clip);
+						}
                         if(shadowH.getT()>=dis){
                             color+=m->shade(ray,hit,dirL,colorL, range_x, range_y);
                         }

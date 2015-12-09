@@ -22,7 +22,7 @@ Background {
 Materials {
     numMaterials 1
     Material { explosion data/textures/ramp24.png
-	       displacement data/displacementMaps/explosion_displ24_r.png
+	       displacement data/displacementMaps/noiseRGB_5.png
 		}
 }
 

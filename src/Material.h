@@ -58,6 +58,15 @@ class Material
       }
     }
 
+	bool receiveShadow(){
+		
+		return !_isExplosion;
+	}
+
+	bool castShadow(){
+		return !_isExplosion;
+	}
+
     float getD(Vector2f texCoord, float range_x, float range_y){
         float d = Vector3f::dot(_displacementMap.getTexel(texCoord[0], texCoord[1]), _channelVector) / 1.2f;
         return (d*(range_y-range_x)+range_x);
