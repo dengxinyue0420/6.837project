@@ -30,7 +30,7 @@ Group {
     numObjects 1
     MaterialIndex 0
     Transform {
-	explosion 
+	explosion
 	XRotate 90
    	TriangleMesh {
     		obj_file data/models/icosphere_h.obj

@@ -6,13 +6,14 @@
 #include <iostream>
 #include <cstdlib>
 #include <vector>
+#include <ctime>
 
 class MyNoise{
 public:
-  MyNoise(int width, int height){
+  MyNoise(int seed, int width, int height){
     _width = width;
     _height = height;
-    generateNoise();
+    generateNoise(seed);
   }
 
   float getNoise(float x, float y, int octaves){
@@ -36,7 +37,8 @@ private:
   int _height;
   std::vector<float> _noise;
 
-  void generateNoise(){
+  void generateNoise(int seed){
+    srand(seed);
     for(int i=0;i<_width;i++){
       for(int j=0;j<_height;j++){
         _noise.push_back(float((rand()%32768)/32768.0));

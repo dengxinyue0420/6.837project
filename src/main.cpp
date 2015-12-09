@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include "vecmath.h"
+#include <ctime>
 
 #include "ArgParser.h"
 #include "Renderer.h"
@@ -42,12 +43,16 @@ main(int argc, const char *argv[])
     int width = atoi(argv[3]);
     int height = atoi(argv[4]);
 
-    MyNoise mn = MyNoise(width,height);
+    MyNoise r = MyNoise(1,width,height);
+    MyNoise g = MyNoise(time(NULL),width,height);
+    MyNoise b = MyNoise(rand(),width,height);
     Image output = Image(width,height);
     for(int i=0;i<width;i++){
       for(int j=0;j<height;j++){
-        float n = mn.getNoise(i,j,octaves);
-        Vector3f color =n*Vector3f(1,1,1);
+        float r_sig = r.getNoise(i,j,octaves);
+        float g_sig = g.getNoise(i,j,octaves);
+        float b_sig = b.getNoise(i,j,octaves);
+        Vector3f color = Vector3f(r_sig,g_sig,b_sig);
         output.setPixel(i,j,color);
       }
     }
@@ -55,8 +60,8 @@ main(int argc, const char *argv[])
   }else{
     ArgParser argsParser(argc, argv);
     Renderer renderer(argsParser);
-	for (int i = 0; i < 6; i++){
-		renderer.Render(0.1666f*i,i);
+	for (int i = 0; i < 100; i++){
+		renderer.Render(0.01f*i,i);
 		std::cout << i << "\n";
 
 	}
