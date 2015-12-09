@@ -39,10 +39,11 @@ public:
         }
 
         virtual void preRender(float t) {
-            std::cout << "got here";
 
             if (_exp){
-                _m = Matrix4f::uniformScaling(- 2.66*t*t + 3.33*t + 0.033) * _om;
+				float scaleFactor = - 1.5*t*t + 2.8*t + 0.033;
+
+                _m = _om * Matrix4f::uniformScaling(scaleFactor) ;
             }
             _object->preRender(t);
         }

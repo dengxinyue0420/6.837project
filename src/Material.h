@@ -134,7 +134,7 @@ class Material
 
 	float getDisplacement(Vector2f &uv){
 		if (!_isExplosion){
-			return  _displacementMap.getTexel(uv.x(), uv.y()).y();
+			return  _displacementMap.getTexel(uv.x(), uv.y()).x() * 0.1f;
 		} else {
 			return Vector3f::dot(_displacementMap.getTexel(uv.x(), uv.y()), _channelVector);
 		}

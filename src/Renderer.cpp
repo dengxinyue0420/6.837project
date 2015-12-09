@@ -96,14 +96,13 @@ transmittedDirection(const Vector3f &normal,
                         color+=m->shade(ray,hit,dirL,colorL,range_x,range_y);
                     }
                 }
-                /*
+                
                 if(bounces>0){
                     //reflection
                     Vector3f mirrorD = mirrorDirection(hit.getNormal().normalized(),ray.getDirection());
                     Ray reflectR = Ray(hitPoint,mirrorD);
                     Hit reflectH = Hit(std::numeric_limits<float>::max(),NULL,Vector3f::ZERO);
-                    //std::cout<<"reflection"<<std::endl;
-                    Vector3f reflection = m->getSpecularColor()*traceRay(reflectR,0.05f,bounces-1,refr_index,reflectH);
+                    Vector3f reflection = m->getSpecularColor()*traceRay(reflectR,0.05f,bounces-1,refr_index,reflectH, t);
 
                     //refraction
                     Vector3f transmit=Vector3f::ZERO;
@@ -118,7 +117,7 @@ transmittedDirection(const Vector3f &normal,
                         if(transmittedDirection(hit.getNormal().normalized(),ray.getDirection(),refr_index,newIndex,transmit)){
                             Ray refractR = Ray(hitPoint,transmit);
                             Hit refractH = Hit(std::numeric_limits<float>::max(),NULL,Vector3f::ZERO);
-                            Vector3f refraction = m->getSpecularColor()*traceRay(refractR,0.05,bounces-1,newIndex,refractH);
+                            Vector3f refraction = m->getSpecularColor()*traceRay(refractR,0.05,bounces-1,newIndex,refractH, t);
 
                             float R0 = std::pow((newIndex-refr_index)/(newIndex+refr_index),2);
                             float c = refr_index<=newIndex ? std::abs(Vector3f::dot(ray.getDirection(),hit.getNormal())) : std::abs(Vector3f::dot(transmit,hit.getNormal()));
@@ -134,7 +133,7 @@ transmittedDirection(const Vector3f &normal,
                     }
 
                 }
-                */
+                
                 return color;
             }else{
                 return _scene.getBackgroundColor(ray.getDirection());
@@ -216,7 +215,6 @@ transmittedDirection(const Vector3f &normal,
 
             group->preRender(t);
 
-            /*
             if(_args.jitter){
                 x_step /=3;
                 y_step /=3;
@@ -225,7 +223,7 @@ transmittedDirection(const Vector3f &normal,
                     for(int j=0;j<3*height;j++){
                         Ray r = cam->generateRay(Vector2f(-1+(i+randomF())*x_step,-1+(j+randomF())*y_step));
                         Hit h = Hit(std::numeric_limits<float>::max(),NULL,Vector3f::ZERO);
-                        Vector3f color = traceRay(r,0,_bounces,1.0f,h);
+                        Vector3f color = traceRay(r,0,_bounces,1.0f,h, t);
                         jitterOut.setPixel(i,j,color);
 
                         if(i%50==0 && j==899){
@@ -250,7 +248,7 @@ transmittedDirection(const Vector3f &normal,
                 }
 
             }else{
-            */
+
                 std::cout<<"Iterate over pixel"<<std::endl;
                 for(int i=0;i<width;i++){
                     for(int j=0;j<height;j++){
@@ -260,7 +258,7 @@ transmittedDirection(const Vector3f &normal,
                         outputF.setPixel(i,j,color);
                     }
                 }
-            //}
+            }
             outputF.savePNG(outputFilename);
 
         }
