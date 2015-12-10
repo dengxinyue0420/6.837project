@@ -42,7 +42,7 @@ main(int argc, const char *argv[])
     int octaves = atoi(argv[2]);
     int width = atoi(argv[3]);
     int height = atoi(argv[4]);
-
+    float contrast = float(atoi(argv[5]));
     MyNoise r = MyNoise(1,width,height);
     MyNoise g = MyNoise(time(NULL),width,height);
     MyNoise b = MyNoise(rand(),width,height);
@@ -52,11 +52,20 @@ main(int argc, const char *argv[])
         float r_sig = r.getNoise(i,j,octaves);
         float g_sig = g.getNoise(i,j,octaves);
         float b_sig = b.getNoise(i,j,octaves);
+        r_sig = (r_sig-0.5)*contrast+0.5;
+        g_sig = (g_sig-0.5)*contrast+0.5;
+        b_sig = (b_sig-0.5)*contrast+0.5;
+        if(r_sig<0) r_sig = 0.0;
+        if(r_sig>1) r_sig = 1.0;
+        if(g_sig<0) g_sig = 0.0;
+        if(g_sig>1) g_sig = 1.0;
+        if(b_sig<0) b_sig = 0.0;
+        if(b_sig>1) b_sig = 1.0;
         Vector3f color = Vector3f(r_sig,g_sig,b_sig);
         output.setPixel(i,j,color);
       }
     }
-    output.savePNG(argv[5]);
+    output.savePNG(argv[6]);
   }else{
     ArgParser argsParser(argc, argv);
     Renderer renderer(argsParser);
